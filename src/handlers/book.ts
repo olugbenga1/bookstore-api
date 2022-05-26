@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import verifyAuthToken from "../middlewares/auth";
 import { BookStore, Book } from "../models/book";
 
 const store = new BookStore();
@@ -62,11 +63,11 @@ const remove = async (req: Request, res: Response) => {
 };
 
 const book_routes = (app: express.Application) => {
-  app.get("/books", index);
-  app.post("/books", create);
-  app.get("/books/:id", show);
-  app.put("/books/:id", update);
-  app.delete("/books/:id", remove);
+  app.get("/books", verifyAuthToken, index);
+  app.post("/books", verifyAuthToken, create);
+  app.get("/books/:id", verifyAuthToken, show);
+  app.put("/books/:id", verifyAuthToken, update);
+  app.delete("/books/:id", verifyAuthToken, remove);
 };
 
 export default book_routes;

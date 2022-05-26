@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import verifyAuthToken from "../middlewares/auth";
 import { UserStore, User } from "../models/user";
 
 const store = new UserStore();
@@ -61,25 +62,9 @@ const authenticate = async (req: Request, res: Response) => {
   }
 };
 
-const verifyAuthToken = async (
-  req: Request,
-  res: Response,
-  next: express.NextFunction
-) => {
-  try {
-    const authorizationHeader = req.headers.authorization;
-    const token = authorizationHeader?.split(" ")[1];
-    const decoded = jwt.verify(token!, process.env.TOKEN_SECRET!);
-    next();
-  } catch (error) {
-    res.json(401);
-    res.json(error);
-  }
-};
-
 const user_routes = (app: express.Application) => {
-  app.get("/users", index);
-  app.get("/users/:id", show);
+  app.get("/users", verifyAuthToken, index);
+  app.get("/users/:id", verifyAuthToken, show);
   app.post("/users", verifyAuthToken, create);
   app.post("/login", authenticate);
 };

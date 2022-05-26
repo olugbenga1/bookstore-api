@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import verifyAuthToken from "../middlewares/auth";
 import { Order, OrderStore } from "../models/order";
 
 const store = new OrderStore();
@@ -53,11 +54,11 @@ const orderBooks = async (req: Request, res: Response) => {
 };
 
 const order_routes = (app: express.Application) => {
-  app.get("/orders", index);
-  app.get("/orders/:id", show);
-  app.post("/orders", create);
-  app.delete("/orders/:id", remove);
-  app.post("/orderbooks", orderBooks);
+  app.get("/orders", verifyAuthToken, index);
+  app.get("/orders/:id", verifyAuthToken, show);
+  app.post("/orders", verifyAuthToken, create);
+  app.delete("/orders/:id", verifyAuthToken, remove);
+  app.post("/orderbooks", verifyAuthToken, orderBooks);
 };
 
 export default order_routes;
