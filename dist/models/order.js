@@ -141,6 +141,35 @@ var OrderStore = /** @class */ (function () {
             });
         });
     };
+    OrderStore.prototype.order_books = function (bookOrder) {
+        return __awaiter(this, void 0, void 0, function () {
+            var conn, sql, values, res, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, database_1["default"].connect()];
+                    case 1:
+                        conn = _a.sent();
+                        sql = "INSERT INTO order_books(quantity, order_id, book_id) VALUES ($1, $2, $3) RETURNING *";
+                        values = [
+                            bookOrder.quantity,
+                            bookOrder.order_id,
+                            bookOrder.book_id,
+                        ];
+                        return [4 /*yield*/, conn.query(sql, values)];
+                    case 2:
+                        res = _a.sent();
+                        conn.release();
+                        return [2 /*return*/, res.rows[0]];
+                    case 3:
+                        error_5 = _a.sent();
+                        throw new Error("".concat(error_5));
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     return OrderStore;
 }());
 exports.OrderStore = OrderStore;

@@ -42,11 +42,22 @@ const remove = async (req: Request, res: Response) => {
   }
 };
 
+const orderBooks = async (req: Request, res: Response) => {
+  try {
+    const bookOrder = req.body;
+    const addBook = await store.order_books(bookOrder);
+    res.status(201).json(addBook);
+  } catch (error) {
+    res.status(400).json("Cannot add new products to order");
+  }
+};
+
 const order_routes = (app: express.Application) => {
   app.get("/orders", index);
   app.get("/orders/:id", show);
   app.post("/orders", create);
   app.delete("/orders/:id", remove);
+  app.post("/orderbooks", orderBooks);
 };
 
 export default order_routes;
