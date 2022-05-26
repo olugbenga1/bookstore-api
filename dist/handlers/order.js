@@ -35,35 +35,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var user_1 = require("../models/user");
-var store = new user_1.UserStore();
+var order_1 = require("../models/order");
+var store = new order_1.OrderStore();
 var index = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var users, error_1;
+    var orders, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, store.index()];
             case 1:
-                users = _a.sent();
-                res.json(users);
+                orders = _a.sent();
+                res.status(200).json(orders);
                 return [3 /*break*/, 3];
             case 2:
                 error_1 = _a.sent();
-                res.status(400);
-                res.send(error_1);
+                res.status(400).json("Cannot fetch all orders");
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); };
 var show = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, user, error_2;
+    var id, order, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -71,92 +66,61 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
                 id = req.params.id;
                 return [4 /*yield*/, store.show(id)];
             case 1:
-                user = _a.sent();
-                res.json(user);
+                order = _a.sent();
+                res.status(200).json(order);
                 return [3 /*break*/, 3];
             case 2:
                 error_2 = _a.sent();
-                res.status(400);
-                res.send(error_2);
+                res.status(400).json("Cannot get order");
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); };
 var create = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, newUser, token, error_3;
+    var order, newOrder, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                user = {
-                    username: req.body.username,
-                    password: req.body.password
-                };
-                _a.label = 1;
+                _a.trys.push([0, 2, , 3]);
+                order = req.body;
+                return [4 /*yield*/, store.create(order)];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, store.create(user)];
+                newOrder = _a.sent();
+                res.status(201).json(newOrder);
+                return [3 /*break*/, 3];
             case 2:
-                newUser = _a.sent();
-                token = jsonwebtoken_1["default"].sign({ user: newUser }, process.env.TOKEN_SECRET);
-                res.json(token);
-                return [3 /*break*/, 4];
-            case 3:
                 error_3 = _a.sent();
-                res.status(400);
-                res.send(error_3);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                res.status(400).json("Cannot get new order");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-var authenticate = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, authenticatedUser, token, error_4;
+var remove = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, removeOrder, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                user = {
-                    username: req.body.username,
-                    password: req.body.password
-                };
-                _a.label = 1;
+                _a.trys.push([0, 2, , 3]);
+                id = req.params.id;
+                return [4 /*yield*/, store.remove(id)];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, store.authenticate(req.body.username, req.body.password)];
+                removeOrder = _a.sent();
+                res.status(200).json(removeOrder);
+                return [3 /*break*/, 3];
             case 2:
-                authenticatedUser = _a.sent();
-                token = jsonwebtoken_1["default"].sign({ user: authenticatedUser }, process.env.TOKEN_SECRET);
-                res.json(token);
-                return [3 /*break*/, 4];
-            case 3:
                 error_4 = _a.sent();
-                res.status(401);
-                res.json(error_4);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                res.status(400).json("Cannot delete order");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-var verifyAuthToken = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var authorizationHeader, token, decoded;
-    return __generator(this, function (_a) {
-        try {
-            authorizationHeader = req.headers.authorization;
-            token = authorizationHeader === null || authorizationHeader === void 0 ? void 0 : authorizationHeader.split(" ")[1];
-            decoded = jsonwebtoken_1["default"].verify(token, process.env.TOKEN_SECRET);
-            next();
-        }
-        catch (error) {
-            res.json(401);
-            res.json(error);
-        }
-        return [2 /*return*/];
-    });
-}); };
-var user_routes = function (app) {
-    app.get("/users", index);
-    app.get("/users/:id", show);
-    app.post("/users", verifyAuthToken, create);
-    app.post("/login", authenticate);
+var order_routes = function (app) {
+    app.get("/orders", index);
+    app.get("/orders/:id", show);
+    app.post("/orders", create);
+    app["delete"]("/orders/:id", remove);
 };
-exports["default"] = user_routes;
+exports["default"] = order_routes;

@@ -78,10 +78,10 @@ const verifyAuthToken = async (
 };
 
 const user_routes = (app: express.Application) => {
-  app.get("/book/users", index);
-  app.get("/book/users/:id", show);
-  app.post("/book/users", verifyAuthToken, create);
-  app.post("/book/login", authenticate);
+  app.get("/users", index);
+  app.get("/users/:id", show);
+  app.post("/users", verifyAuthToken, create);
+  app.post("/login", authenticate);
 };
 
 export default user_routes;
